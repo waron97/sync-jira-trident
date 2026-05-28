@@ -84,25 +84,4 @@ export async function runCommand(options) {
     console.log(`Created Trident task ${id}: ${payload.name}`);
   }
 
-  const GIOVANNI_ID = parseInt(process.env.TRIDENT_ID_GIOVANNI);
-  for (let i = 0; i < output.length; i++) {
-    const issue = output[i];
-    const payload = tridentPayloads[i];
-    const existing = existingByName.get(payload.name);
-    if (!existing) continue;
-
-    const ownerId = Array.isArray(existing.x_tech_ownership_id)
-      ? existing.x_tech_ownership_id[0]
-      : existing.x_tech_ownership_id;
-    if (ownerId !== GIOVANNI_ID) continue;
-
-    const newAssigneeId = payload.user_ids[0][2][0];
-    if (newAssigneeId === GIOVANNI_ID) continue; // unknown assignee — skip
-
-    const currentAssignees = existing.user_ids ?? [];
-    if (currentAssignees.length === 1 && currentAssignees[0] === newAssigneeId) continue;
-
-    await writeTridentTask(existing.id, { user_ids: [[6, 0, [newAssigneeId]]] });
-    console.log(`Updated assignee on ${existing.id} (${issue.key}): ${issue.assignee}`);
-  }
 }
