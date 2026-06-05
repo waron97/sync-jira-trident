@@ -36,9 +36,11 @@ export function buildTridentPayload(issue, clusters) {
     "Selene Verna":     parseInt(process.env.TRIDENT_ID_SELENE),
     "Giovanni Corrado": parseInt(process.env.TRIDENT_ID_GIOVANNI),
     "Licia Matarrese":  parseInt(process.env.TRIDENT_ID_LICIA),
+    "Giulia Cavicchia": parseInt(process.env.TRIDENT_ID_GIULIA),
   };
   const OWNER_MAP = {
-    "Licia Matarrese": parseInt(process.env.TRIDENT_ID_LICIA),
+    "Licia Matarrese":  parseInt(process.env.TRIDENT_ID_LICIA),
+    "Giulia Cavicchia": parseInt(process.env.TRIDENT_ID_GIULIA),
   };
   const clusterId = matchCluster(clusters, issue.processoDiRiferimento);
   const assigneeId = ASSIGNEE_MAP[issue.assignee] ?? parseInt(process.env.TRIDENT_ID_GIOVANNI);
@@ -82,6 +84,21 @@ export async function runCommand(options) {
     const id = await createTridentTask(payload);
     await writeTridentTask(id, { x_tech_ownership_id: payload.x_tech_ownership_id });
     console.log(`Created Trident task ${id}: ${payload.name}`);
+  }
+
+  const resolvedStageId = parseInt(process.env.TRIDENT_RESOLVED_JIRA_STAGE_ID);
+  const startingStageId = parseInt(process.env.TRIDENT_STARTING_STAGE_ID);
+  const currentNames = new Set(tridentPayloads.map((p) => p.name));
+
+  const toReopen = existingTasks.filter((t) => {
+    const stageId = Array.isArray(t.stage_id) ? t.stage_id[0] : t.stage_id;
+    return stageId === resolvedStageId && currentNames.has(t.name);
+  });
+
+  console.log(`${toReopen.length} reopened tasks to reset`);
+  for (const task of toReopen) {
+    await writeTridentTask(task.id, { stage_id: startingStageId });
+    console.log(`Reopened Trident task ${task.id}: ${task.name}`);
   }
 
 }

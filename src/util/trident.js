@@ -34,7 +34,7 @@ export async function fetchExistingTasks() {
     "project.task",
     "search_read",
     [[["project_id", "=", parseInt(process.env.TRIDENT_PROJECT_ID)]]],
-    { fields: ["name", "x_tech_ownership_id", "user_ids"], limit: 1000 }
+    { fields: ["name", "x_tech_ownership_id", "user_ids", "stage_id"], limit: 1000 }
   );
 }
 

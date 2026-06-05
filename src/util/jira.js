@@ -42,7 +42,7 @@ export function adfToHtml(node) {
   }
 }
 
-const JQL = `status in ("DA VERIFICARE","IN RESOLUTION") AND assignee in ("Aron Winkler","Selene Verna","Licia Matarrese") AND cf[10312] in ("Bug","Bug UX/UI","Enhancement")`;
+const JQL = `status in ("DA VERIFICARE","IN RESOLUTION") AND assignee in ("Aron Winkler","Selene Verna","Licia Matarrese","Giulia Cavicchia") AND cf[10312] in ("Bug","Bug UX/UI","Enhancement")`;
 const FIELDS = [
   "summary",
   "description",
