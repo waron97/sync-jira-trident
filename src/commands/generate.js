@@ -1,6 +1,6 @@
 import { fetchJiraIssue } from "../util/jira.js";
 import { fetchExistingTasks, fetchClusters, createTridentTask, writeTridentTask } from "../util/trident.js";
-import { normalizeIssue, buildTridentPayload } from "./run.js";
+import { normalizeIssue, buildTridentPayload, uploadIssueAttachments } from "./run.js";
 
 export async function generateCommand(key) {
   const raw = await fetchJiraIssue(key);
@@ -18,4 +18,5 @@ export async function generateCommand(key) {
   const id = await createTridentTask(payload);
   await writeTridentTask(id, { x_tech_ownership_id: payload.x_tech_ownership_id });
   console.log(`Created Trident task ${id}: ${payload.name}`);
+  await uploadIssueAttachments(issue, id);
 }

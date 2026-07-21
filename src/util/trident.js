@@ -80,3 +80,13 @@ export async function createTridentTask(payload) {
 export async function writeTridentTask(id, fields) {
   return callTrident("project.task", "write", [[id], fields]);
 }
+
+export async function createTridentAttachment({ name, datas, mimetype, resId }) {
+  return callTrident("ir.attachment", "create", [[{
+    name,
+    datas,
+    mimetype,
+    res_model: "project.task",
+    res_id: resId,
+  }]]);
+}

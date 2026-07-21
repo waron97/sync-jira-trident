@@ -54,6 +54,7 @@ const FIELDS = [
   "customfield_10312",
   "priority",
   "reporter",
+  "attachment",
 ];
 
 export async function fetchJiraIssue(key) {
@@ -109,4 +110,19 @@ export async function fetchAllJiraIssues() {
   }
 
   return issues;
+}
+
+export async function fetchAttachmentBase64(contentUrl) {
+  const AUTH = Buffer.from(
+    `${process.env.JIRA_USER}:${process.env.JIRA_TOKEN}`
+  ).toString("base64");
+
+  const res = await fetch(contentUrl, {
+    headers: { Authorization: `Basic ${AUTH}` },
+  });
+
+  if (!res.ok)
+    throw new Error(`Jira attachment error: ${res.status} ${await res.text()}`);
+
+  return Buffer.from(await res.arrayBuffer()).toString("base64");
 }

@@ -1,6 +1,8 @@
 import fs from "fs/promises";
-import { fetchAllJiraIssues, adfToHtml } from "../util/jira.js";
-import { fetchExistingTasks, fetchClusters, matchCluster, createTridentTask, writeTridentTask } from "../util/trident.js";
+import { fetchAllJiraIssues, adfToHtml, fetchAttachmentBase64 } from "../util/jira.js";
+import { fetchExistingTasks, fetchClusters, matchCluster, createTridentTask, writeTridentTask, createTridentAttachment } from "../util/trident.js";
+
+const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 
 function resolveSeverity(issue) {
   if (issue.bloccante === "Si") return parseInt(process.env.TRIDENT_SEVERITY_BLOCCANTE);
@@ -26,7 +28,29 @@ export function normalizeIssue(raw) {
     reporter: raw.fields.reporter?.displayName ?? null,
     modalitaDiEsecuzione: raw.fields.customfield_10251?.value ?? raw.fields.customfield_10251 ?? null,
     tipologiaSegnalazione: raw.fields.customfield_10312?.value ?? raw.fields.customfield_10312 ?? null,
+    attachments: (raw.fields.attachment ?? []).map((a) => ({
+      filename: a.filename,
+      mimeType: a.mimeType,
+      size: a.size,
+      content: a.content,
+    })),
   };
+}
+
+export async function uploadIssueAttachments(issue, taskId) {
+  for (const att of issue.attachments ?? []) {
+    if (att.size > MAX_ATTACHMENT_BYTES) {
+      console.warn(`Skipping ${att.filename} (${att.size} bytes > cap) on task ${taskId}`);
+      continue;
+    }
+    try {
+      const datas = await fetchAttachmentBase64(att.content);
+      await createTridentAttachment({ name: att.filename, datas, mimetype: att.mimeType, resId: taskId });
+      console.log(`Attached ${att.filename} to task ${taskId}`);
+    } catch (e) {
+      console.warn(`Failed to attach ${att.filename} to task ${taskId}: ${e.message}`);
+    }
+  }
 }
 
 export function buildTridentPayload(issue, clusters) {
@@ -77,13 +101,15 @@ export async function runCommand(options) {
   const existingTasks = await fetchExistingTasks();
   const existingByName = new Map(existingTasks.map((t) => [t.name, t]));
 
-  const toCreate = tridentPayloads.filter((p) => !existingByName.has(p.name));
+  const paired = output.map((issue, i) => ({ issue, payload: tridentPayloads[i] }));
+  const toCreate = paired.filter(({ payload }) => !existingByName.has(payload.name));
   console.log(`${toCreate.length} new tasks to create (${tridentPayloads.length - toCreate.length} already exist)`);
 
-  for (const payload of toCreate) {
+  for (const { issue, payload } of toCreate) {
     const id = await createTridentTask(payload);
     await writeTridentTask(id, { x_tech_ownership_id: payload.x_tech_ownership_id });
     console.log(`Created Trident task ${id}: ${payload.name}`);
+    await uploadIssueAttachments(issue, id);
   }
 
   const resolvedStageId = parseInt(process.env.TRIDENT_RESOLVED_JIRA_STAGE_ID);
