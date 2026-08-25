@@ -6,6 +6,7 @@ dotenv.config();
 import { Command } from "commander";
 import { runCommand } from "./commands/run.js";
 import { generateCommand } from "./commands/generate.js";
+import { reportCommand } from "./commands/report.js";
 
 const program = new Command();
 program.name("jirasync").description("Sync Jira issues to Trident").version("1.0.0");
@@ -20,6 +21,12 @@ program
   .command("generate <key>")
   .description("Fetch single Jira issue by key and create Trident task if not exists")
   .action(generateCommand);
+
+program
+  .command("report")
+  .description("Dry-run resolution report for all open TESTML tickets (no Trident writes)")
+  .option("-o, --output <path>", "report JSON file path", "report.json")
+  .action(reportCommand);
 
 program
   .command("start")

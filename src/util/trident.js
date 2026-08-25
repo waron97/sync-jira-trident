@@ -24,6 +24,9 @@ async function callTrident(model, method, args, kwargs = {}) {
     }),
   });
 
+  if (!res.ok)
+    throw new Error(`Trident HTTP error: ${res.status} ${await res.text()}`);
+
   const data = await res.json();
   if (data.error) throw new Error(`Trident error: ${JSON.stringify(data.error)}`);
   return data.result;
@@ -39,12 +42,48 @@ export async function fetchExistingTasks() {
 }
 
 export async function fetchClusters() {
+  // Odoo's default active-record filter hides archived x_cluster rows —
+  // verified live that ~61% of all clusters (651/1061) are archived but
+  // still valid x_cluster_id targets, so active_test:false is required
+  // to see the full set.
   return callTrident(
     "x_cluster",
     "search_read",
     [[]],
-    { fields: ["id", "x_name"] }
+    { fields: ["id", "x_name", "x_owner_id"], context: { active_test: false } }
   );
+}
+
+export async function fetchProjectFollowers() {
+  const [project] = await callTrident(
+    "project.project",
+    "search_read",
+    [[["id", "=", parseInt(process.env.TRIDENT_PROJECT_ID)]]],
+    { fields: ["message_partner_ids"] }
+  );
+
+  if (!project?.message_partner_ids?.length) return [];
+
+  return callTrident(
+    "res.users",
+    "search_read",
+    [[["partner_id", "in", project.message_partner_ids]]],
+    { fields: ["id", "name", "login", "partner_id"] }
+  );
+}
+
+export async function fetchSprints() {
+  return callTrident(
+    "x_project_sprint",
+    "search_read",
+    [[]],
+    { fields: ["id", "x_name", "x_date_from", "x_date_to"] }
+  );
+}
+
+export async function createSprint({ x_name, x_date_from, x_date_to }) {
+  const result = await callTrident("x_project_sprint", "create", [[{ x_name, x_date_from, x_date_to }]]);
+  return Array.isArray(result) ? result[0] : result;
 }
 
 export function matchCluster(clusters, processCode) {
@@ -82,11 +121,47 @@ export async function writeTridentTask(id, fields) {
 }
 
 export async function createTridentAttachment({ name, datas, mimetype, resId }) {
-  return callTrident("ir.attachment", "create", [[{
+  const result = await callTrident("ir.attachment", "create", [[{
     name,
     datas,
     mimetype,
     res_model: "project.task",
     res_id: resId,
   }]]);
+  return Array.isArray(result) ? result[0] : result;
+}
+
+export async function fetchTaskAttachments(taskId) {
+  return callTrident(
+    "ir.attachment",
+    "search_read",
+    [[["res_model", "=", "project.task"], ["res_id", "=", taskId]]],
+    { fields: ["id", "name"] }
+  );
+}
+
+export async function fetchAllTaskMessages(taskIds) {
+  if (!taskIds.length) return [];
+  return callTrident(
+    "mail.message",
+    "search_read",
+    [[["model", "=", "project.task"], ["res_id", "in", taskIds]]],
+    { fields: ["id", "res_id", "body"], limit: 10000 }
+  );
+}
+
+// Direct mail.message.create, NOT project.task.message_post — message_post
+// through this JSON-RPC path double-escapes HTML (verified live, see
+// plan.md §10.2). subtype_id 2 = "Note", doesn't notify followers — avoids
+// a notification storm on the first backlog import.
+export async function createComment({ taskId, body, attachmentIds = [] }) {
+  const result = await callTrident("mail.message", "create", [[{
+    model: "project.task",
+    res_id: taskId,
+    body,
+    message_type: "comment",
+    subtype_id: 2,
+    attachment_ids: [[6, 0, attachmentIds]],
+  }]]);
+  return Array.isArray(result) ? result[0] : result;
 }

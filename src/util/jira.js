@@ -14,14 +14,17 @@ function applyMarks(text, marks = []) {
   }, text);
 }
 
-export function adfToHtml(node) {
+// ctx.resolveMedia(mediaId) -> {tridentAttachmentId, filename, mimeType} | undefined.
+// Only comment-sync passes this; description conversion has no attachment
+// context, so media nodes there just render as an unresolved placeholder.
+export function adfToHtml(node, ctx = {}) {
   if (!node) return "";
 
   if (node.type === "text") {
     return applyMarks(node.text ?? "", node.marks);
   }
 
-  const inner = (node.content ?? []).map(adfToHtml).join("");
+  const inner = (node.content ?? []).map((n) => adfToHtml(n, ctx)).join("");
 
   switch (node.type) {
     case "doc":           return inner;
@@ -38,11 +41,28 @@ export function adfToHtml(node) {
     case "expand":
     case "nestedExpand":  return `<details><summary>${node.attrs?.title ?? ""}</summary>${inner}</details>`;
     case "inlineCard":    return `<a href="${node.attrs?.url ?? ""}">${node.attrs?.url ?? ""}</a>`;
+    case "mention":       return `<strong>${node.attrs?.text ?? ""}</strong>`;
+    case "media":
+    case "mediaInline": {
+      // No resolver at all (e.g. description build, which has no attachment
+      // context available at that point) -> drop silently, same as before
+      // this case existed; the image still exists as a real task attachment
+      // via uploadIssueAttachments, just not rendered inline. Only show the
+      // placeholder when a resolver was actually attempted and failed
+      // (comment-sync) — that's a genuine, worth-flagging match failure.
+      if (!ctx.resolveMedia) return "";
+      const resolved = ctx.resolveMedia(node.attrs?.id);
+      if (!resolved) return `<em>[allegato non sincronizzato]</em>`;
+      if (resolved.mimeType?.startsWith("image/")) {
+        return `<img src="/web/image/${resolved.tridentAttachmentId}" alt="${resolved.filename}" style="max-width:400px"/>`;
+      }
+      return `<a href="/web/content/${resolved.tridentAttachmentId}?download=true">${resolved.filename}</a>`;
+    }
     default:              return inner;
   }
 }
 
-const JQL = `status in ("DA VERIFICARE","IN RESOLUTION") AND assignee in ("Aron Winkler","Selene Verna","Licia Matarrese","Giulia Cavicchia") AND cf[10312] in ("Bug","Bug UX/UI","Enhancement")`;
+const JQL = `project = TESTML AND status in ("DA VERIFICARE","IN RESOLUTION","SRG Business Check") AND cf[10312] in ("Bug","Bug UX/UI","Enhancement","Verifica")`;
 const FIELDS = [
   "summary",
   "description",
@@ -52,6 +72,7 @@ const FIELDS = [
   "customfield_10222",
   "customfield_10251",
   "customfield_10312",
+  "customfield_11690",
   "priority",
   "reporter",
   "attachment",
@@ -76,7 +97,7 @@ export async function fetchJiraIssue(key) {
   return res.json();
 }
 
-export async function fetchAllJiraIssues() {
+async function searchJiraIssues(jql, fields) {
   const BASE_URL = process.env.JIRA_URL;
   const AUTH = Buffer.from(
     `${process.env.JIRA_USER}:${process.env.JIRA_TOKEN}`
@@ -87,7 +108,7 @@ export async function fetchAllJiraIssues() {
   const maxResults = 50;
 
   while (true) {
-    const body = { jql: JQL, fields: FIELDS, maxResults };
+    const body = { jql, fields, maxResults };
     if (nextPageToken) body.nextPageToken = nextPageToken;
 
     const res = await fetch(`${BASE_URL}/search/jql`, {
@@ -110,6 +131,63 @@ export async function fetchAllJiraIssues() {
   }
 
   return issues;
+}
+
+export async function fetchAllJiraIssues() {
+  return searchJiraIssues(JQL, FIELDS);
+}
+
+export async function fetchJiraComments(key) {
+  const BASE_URL = process.env.JIRA_URL;
+  const AUTH = Buffer.from(
+    `${process.env.JIRA_USER}:${process.env.JIRA_TOKEN}`
+  ).toString("base64");
+
+  const comments = [];
+  let startAt = 0;
+  const maxResults = 100;
+
+  while (true) {
+    const res = await fetch(`${BASE_URL}/issue/${key}/comment?startAt=${startAt}&maxResults=${maxResults}`, {
+      headers: { Authorization: `Basic ${AUTH}`, Accept: "application/json" },
+    });
+
+    if (!res.ok)
+      throw new Error(`Jira API error: ${res.status} ${await res.text()}`);
+
+    const data = await res.json();
+    comments.push(...data.comments);
+    startAt += data.comments.length;
+    if (data.comments.length === 0 || startAt >= data.total) break;
+  }
+
+  return comments;
+}
+
+// Lightweight — only the attachment field, for the comment-media matching
+// heuristic. Distinct from fetchJiraIssue(), which pulls the full FIELDS set.
+export async function fetchJiraAttachmentsForIssue(key) {
+  const BASE_URL = process.env.JIRA_URL;
+  const AUTH = Buffer.from(
+    `${process.env.JIRA_USER}:${process.env.JIRA_TOKEN}`
+  ).toString("base64");
+
+  const res = await fetch(`${BASE_URL}/issue/${key}?fields=attachment`, {
+    headers: { Authorization: `Basic ${AUTH}`, Accept: "application/json" },
+  });
+
+  if (!res.ok)
+    throw new Error(`Jira API error: ${res.status} ${await res.text()}`);
+
+  const data = await res.json();
+  return (data.fields.attachment ?? []).map((a) => ({
+    id: a.id,
+    filename: a.filename,
+    mimeType: a.mimeType,
+    size: a.size,
+    content: a.content,
+    created: a.created,
+  }));
 }
 
 export async function fetchAttachmentBase64(contentUrl) {
