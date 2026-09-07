@@ -1,27 +1,325 @@
 {
   "summary": {
-    "total": 305,
-    "skipped": 232,
-    "alreadyExists": 22,
-    "wouldCreate": 51,
+    "total": 299,
+    "skipped": 229,
+    "alreadyExists": 70,
+    "wouldCreate": 0,
     "assignee": {
-      "exact": 73,
+      "exact": 70,
       "fuzzy": 0,
       "llm": 0,
-      "unresolved": 232
+      "unresolved": 229
     },
     "cluster": {
-      "stringMatch": 273,
-      "llm": 18,
-      "none": 14
+      "stringMatch": 269,
+      "llm": 6,
+      "none": 24
     },
     "sprint": {
-      "applicable": 57,
-      "matched": 37,
-      "wouldCreate": 20
+      "applicable": 56,
+      "matched": 40,
+      "wouldCreate": 16
     }
   },
   "entries": [
+    {
+      "key": "TESTML-83837",
+      "title": "[Wave 2] Flusso CP1_0100: Campo \"Via\" valorizzazione errata",
+      "rawAssignee": "Francesco Bertelli",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 738,
+        "clusterName": "BBP - SSP_13"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83836",
+      "title": "[Wave 2] - GAS + Fibra SWIN – Errore calculate_and_set_expected_start_date per profilo OLO non collegato",
+      "rawAssignee": "Ilaria Nicolella",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 738,
+        "clusterName": "BBP - SSP_13"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83835",
+      "title": "Anomalia item MGM PROMOTORE (UAT)",
+      "rawAssignee": "Eleonora D'Agostino",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 961,
+        "clusterName": "BBP - GAP_320"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83620",
+      "title": "[CRM_78]- Modifica filtri offerte Dual",
+      "rawAssignee": "Filippo Vinci",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 330,
+        "clusterName": "BBP - CRM_78"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83619",
+      "title": "Invio Notify in Assenza Campi Obbligatori",
+      "rawAssignee": "Ilaria Nicolella",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 741,
+        "clusterName": "BBP - SSP_19"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83614",
+      "title": "Mancata creazione massiva case AM03 - 1 - Modalità di Pagamento",
+      "rawAssignee": "Giovanni Corrado",
+      "assignee": {
+        "method": "exact",
+        "tridentUserId": 48,
+        "matchedName": "Giovanni Corrado"
+      },
+      "skip": false,
+      "cluster": {
+        "method": "llm",
+        "clusterId": 14,
+        "clusterName": "STG | Aggiornamento Modalità di Pagamento",
+        "confidence": 0.85
+      },
+      "ownership": {
+        "source": "assignee",
+        "tridentUserId": 48
+      },
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": true
+    },
+    {
+      "key": "TESTML-83613",
+      "title": "[Wave 2] – Codice Fiscale non valorizzato su anagrafica cliente Condominio e KO su Check POD/PDR",
+      "rawAssignee": "Ilaria Nicolella",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 738,
+        "clusterName": "BBP - SSP_13"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83610",
+      "title": " I-33.41 checkCustomerBlacklist -  disallineamento ambienti test",
+      "rawAssignee": "Licia Matarrese",
+      "assignee": {
+        "method": "exact",
+        "tridentUserId": 62,
+        "matchedName": "Licia Matarrese"
+      },
+      "skip": false,
+      "cluster": {
+        "method": "llm",
+        "clusterId": 150,
+        "clusterName": "Blacklist",
+        "confidence": 0.9
+      },
+      "ownership": {
+        "source": "assignee",
+        "tridentUserId": 62
+      },
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": true
+    },
+    {
+      "key": "TESTML-83596",
+      "title": "Mancato consolidamento delle elaborazioni di fatture in ambiente SIT di M2C",
+      "rawAssignee": "Eleonora D'Agostino",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 917,
+        "clusterName": "BBP - DOC_INT_12"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83595",
+      "title": "Mancato calcolo TIF (UAT)",
+      "rawAssignee": "Eleonora D'Agostino",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 961,
+        "clusterName": "BBP - GAP_320"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83594",
+      "title": "[Wave 2] - Fibra - Errore getProvider 404 ",
+      "rawAssignee": "Ilaria Nicolella",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 738,
+        "clusterName": "BBP - SSP_13"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
+    {
+      "key": "TESTML-83593",
+      "title": "[Wave 2] - Fibra – Indirizzo di fornitura valorizzato con indirizzo GAS invece di quello ricevuto da Order Entry",
+      "rawAssignee": "Ilaria Nicolella",
+      "assignee": {
+        "method": "unresolved",
+        "tridentUserId": null
+      },
+      "skip": true,
+      "cluster": {
+        "method": "string-match",
+        "clusterId": 738,
+        "clusterName": "BBP - SSP_13"
+      },
+      "ownership": null,
+      "tag": {
+        "id": 21,
+        "name": "BUG"
+      },
+      "sprint": {
+        "applicable": false
+      },
+      "alreadyExists": false
+    },
     {
       "key": "TESTML-82898",
       "title": "Mancata valorizzazione Motivo Ricalcolo 'Z5' nel record LECO1141000 del CSV di stampa",
@@ -32,10 +330,8 @@
       },
       "skip": true,
       "cluster": {
-        "method": "llm",
-        "clusterId": 23,
-        "clusterName": "STG | Variazioni Anagrafiche",
-        "confidence": 0.85
+        "method": "none",
+        "clusterId": false
       },
       "ownership": null,
       "tag": {
@@ -146,7 +442,7 @@
     {
       "key": "TESTML-82889",
       "title": "Errori su date per FIB-000003 e FIB-000004 su RES_NEFIBR0101",
-      "rawAssignee": "Serena Palazzo",
+      "rawAssignee": "Giuseppe Mattera",
       "assignee": {
         "method": "unresolved",
         "tridentUserId": null
@@ -156,7 +452,7 @@
         "method": "llm",
         "clusterId": 915,
         "clusterName": "PRODOTTI - ST - MIGRATO - RES_NEFIBR0101",
-        "confidence": 0.9
+        "confidence": 0.93
       },
       "ownership": null,
       "tag": {
@@ -171,7 +467,7 @@
     {
       "key": "TESTML-82888",
       "title": "Errata gestione data componenti su RES_NELFIX0103",
-      "rawAssignee": "Serena Palazzo",
+      "rawAssignee": "Giuseppe Mattera",
       "assignee": {
         "method": "unresolved",
         "tridentUserId": null
@@ -181,7 +477,7 @@
         "method": "llm",
         "clusterId": 268,
         "clusterName": "PRODOTTI - ST - MIGRATO - RES_NELFIX0103",
-        "confidence": 0.95
+        "confidence": 0.9
       },
       "ownership": null,
       "tag": {
@@ -227,10 +523,8 @@
       },
       "skip": true,
       "cluster": {
-        "method": "llm",
-        "clusterId": 225,
-        "clusterName": "PRODOTTI - ST - MIGRATO",
-        "confidence": 0.85
+        "method": "none",
+        "clusterId": false
       },
       "ownership": null,
       "tag": {
@@ -278,58 +572,9 @@
       "skip": true,
       "cluster": {
         "method": "llm",
-        "clusterId": 371,
-        "clusterName": "PRODOTTI - ST - MIGRATO - NEGFIXHYB",
-        "confidence": 0.85
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-82880",
-      "title": "Errata valorizzazione componente su C24L01",
-      "rawAssignee": "tania di monda",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "llm",
-        "clusterId": 249,
-        "clusterName": "PRODOTTI - ST - MIGRATO - C24L01",
-        "confidence": 0.9
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-82876",
-      "title": "[Wave 2] - CCQ – Task di Riascolto presente nonostante esito CCQ OK",
-      "rawAssignee": "Francesco Bertelli",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 738,
-        "clusterName": "BBP - SSP_13"
+        "clusterId": 225,
+        "clusterName": "PRODOTTI - ST - MIGRATO",
+        "confidence": 0.7
       },
       "ownership": null,
       "tag": {
@@ -558,30 +803,6 @@
       "alreadyExists": false
     },
     {
-      "key": "TESTML-82859",
-      "title": "Mancata valorizzazione info su tipo FASCIA fatturazione",
-      "rawAssignee": "Eleonora D'Agostino",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 917,
-        "clusterName": "BBP - DOC_INT_12"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
       "key": "TESTML-82857",
       "title": "Errata gestione letture e consumi su REATTIVA PRELEVATA",
       "rawAssignee": "Eleonora D'Agostino",
@@ -738,55 +959,6 @@
         "method": "string-match",
         "clusterId": 917,
         "clusterName": "BBP - DOC_INT_12"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-82846",
-      "title": "Campi \"Provider\" e \"WhsOrderCode\" assenti all'interno del cruscotto Attivazione Fibra",
-      "rawAssignee": "Leonardo Notaristefano",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "llm",
-        "clusterId": 3,
-        "clusterName": "STG | Prima Attivazione",
-        "confidence": 0.85
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-82838",
-      "title": "[Wave 2] - Marketcomm IV1.0050 – Campo CP_UTENTE assente nel dettaglio flusso ma presente sulla riga della pratica",
-      "rawAssignee": "Fabio.costantini",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 738,
-        "clusterName": "BBP - SSP_13"
       },
       "ownership": null,
       "tag": {
@@ -1253,33 +1425,9 @@
       "alreadyExists": false
     },
     {
-      "key": "TESTML-82022",
-      "title": "SSP_19 – Order Entry Apparound – Mancato invio di checkCambioMercatoFlag per forniture ELE Switch-In, Switch-In con Voltura e Riattivazione",
-      "rawAssignee": "ALICE TINAGLI",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 741,
-        "clusterName": "BBP - SSP_19"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
       "key": "TESTML-82021",
       "title": "SSP_19 – Order Entry Apparound – PDR non trovato per Switch-In e Switch-In con Voltura GAS",
-      "rawAssignee": "ALICE TINAGLI",
+      "rawAssignee": "Luca Lillo",
       "assignee": {
         "method": "unresolved",
         "tridentUserId": null
@@ -1341,10 +1489,8 @@
       },
       "skip": false,
       "cluster": {
-        "method": "llm",
-        "clusterId": 3,
-        "clusterName": "STG | Prima Attivazione",
-        "confidence": 0.9
+        "method": "none",
+        "clusterId": false
       },
       "ownership": {
         "source": "assignee",
@@ -1376,10 +1522,8 @@
       },
       "skip": false,
       "cluster": {
-        "method": "llm",
-        "clusterId": 3,
-        "clusterName": "STG | Prima Attivazione",
-        "confidence": 0.85
+        "method": "none",
+        "clusterId": false
       },
       "ownership": {
         "source": "assignee",
@@ -1450,7 +1594,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-81999",
@@ -1479,7 +1623,7 @@
     {
       "key": "TESTML-81998",
       "title": "InOrder Agenti - Errore su nuovo allaccio ELE \"must have required property 'checkCambioMercatoFlag'\"",
-      "rawAssignee": "ALICE TINAGLI",
+      "rawAssignee": "Ilaria Nicolella",
       "assignee": {
         "method": "unresolved",
         "tridentUserId": null
@@ -1554,27 +1698,23 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-81990",
       "title": "Errore in testata EM21 - 1 - Attivazione Servizio Emobility",
-      "rawAssignee": "Licia Matarrese",
+      "rawAssignee": "Ilenia De Paolis",
       "assignee": {
-        "method": "exact",
-        "tridentUserId": 62,
-        "matchedName": "Licia Matarrese"
+        "method": "unresolved",
+        "tridentUserId": null
       },
-      "skip": false,
+      "skip": true,
       "cluster": {
         "method": "string-match",
         "clusterId": 351,
         "clusterName": "BBP - ST - CRM_18"
       },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 62
-      },
+      "ownership": null,
       "tag": {
         "id": 21,
         "name": "BUG"
@@ -1697,40 +1837,6 @@
       "alreadyExists": false
     },
     {
-      "key": "TESTML-81617",
-      "title": "Case Cambio Prodotto da TIRV fermo in Esegui Compilazione Wizard da TIRV ",
-      "rawAssignee": "luca.carnevale",
-      "assignee": {
-        "method": "exact",
-        "tridentUserId": 330,
-        "matchedName": "Luca Carnevale"
-      },
-      "skip": false,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 393,
-        "clusterName": "BBP - CROSS_104"
-      },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 330
-      },
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": true,
-        "matchedSprintId": 6,
-        "matchedSprintName": "17 a 21 | Agosto 2026",
-        "duplicateIds": [
-          6,
-          55
-        ]
-      },
-      "alreadyExists": false
-    },
-    {
       "key": "TESTML-79070",
       "title": "Errori su valorizzazione record per gestione consumi reattiva prelevata",
       "rawAssignee": "tania di monda",
@@ -1764,10 +1870,8 @@
       },
       "skip": true,
       "cluster": {
-        "method": "llm",
-        "clusterId": 5,
-        "clusterName": "STG | Integrazioni Esterne",
-        "confidence": 0.85
+        "method": "none",
+        "clusterId": false
       },
       "ownership": null,
       "tag": {
@@ -1782,19 +1886,21 @@
     {
       "key": "TESTML-78737",
       "title": "I-33.36 Bug post SIT sviluppi apparound",
-      "rawAssignee": "maria angela nugnes",
+      "rawAssignee": "Licia Matarrese",
       "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
+        "method": "exact",
+        "tridentUserId": 62,
+        "matchedName": "Licia Matarrese"
       },
-      "skip": true,
+      "skip": false,
       "cluster": {
-        "method": "llm",
-        "clusterId": 5,
-        "clusterName": "STG | Integrazioni Esterne",
-        "confidence": 0.85
+        "method": "none",
+        "clusterId": false
       },
-      "ownership": null,
+      "ownership": {
+        "source": "assignee",
+        "tridentUserId": 62
+      },
       "tag": {
         "id": 21,
         "name": "BUG"
@@ -1877,30 +1983,6 @@
       "tag": {
         "id": 251,
         "name": "Enhancement"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-78639",
-      "title": "BUG monitor oneri",
-      "rawAssignee": "CARMELA SANNINO",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 183,
-        "clusterName": "BBP - BIL_03.2"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
       },
       "sprint": {
         "applicable": false
@@ -2136,7 +2218,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-64884",
@@ -2284,31 +2366,6 @@
         "method": "string-match",
         "clusterId": 738,
         "clusterName": "BBP - SSP_13"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-64402",
-      "title": "Nel report CRE_202 il campo classe di affidamento non contiene solo valori a blanck ma riporta anche valori 1A",
-      "rawAssignee": "IVANA DELLA PIA",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "llm",
-        "clusterId": 8,
-        "clusterName": "STG | Report",
-        "confidence": 0.85
       },
       "ownership": null,
       "tag": {
@@ -2547,10 +2604,8 @@
       },
       "skip": true,
       "cluster": {
-        "method": "llm",
-        "clusterId": 22,
-        "clusterName": "STG | BILLING",
-        "confidence": 0.9
+        "method": "none",
+        "clusterId": false
       },
       "ownership": null,
       "tag": {
@@ -2743,16 +2798,16 @@
           54
         ]
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-55714",
       "title": "Riadeguamento Importi SLA Reclami",
-      "rawAssignee": "Giovanni Corrado",
+      "rawAssignee": "Aron Winkler",
       "assignee": {
         "method": "exact",
-        "tridentUserId": 48,
-        "matchedName": "Giovanni Corrado"
+        "tridentUserId": 279,
+        "matchedName": "Aron Winkler"
       },
       "skip": false,
       "cluster": {
@@ -2762,7 +2817,7 @@
       },
       "ownership": {
         "source": "assignee",
-        "tridentUserId": 48
+        "tridentUserId": 279
       },
       "tag": {
         "id": 251,
@@ -2777,7 +2832,7 @@
           55
         ]
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-55652",
@@ -2805,7 +2860,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-55440",
@@ -3069,7 +3124,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-55045",
@@ -3103,7 +3158,7 @@
           55
         ]
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-55044",
@@ -3169,22 +3224,18 @@
     {
       "key": "TESTML-54912",
       "title": "Tab Attivazione - Assenza Campo Potenza Impegnata/ Disponibile",
-      "rawAssignee": "Selene Verna",
+      "rawAssignee": "beatrice.zinchi",
       "assignee": {
-        "method": "exact",
-        "tridentUserId": 65,
-        "matchedName": "Selene Verna"
+        "method": "unresolved",
+        "tridentUserId": null
       },
-      "skip": false,
+      "skip": true,
       "cluster": {
         "method": "string-match",
         "clusterId": 297,
         "clusterName": "BBP - CROSS_34"
       },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 65
-      },
+      "ownership": null,
       "tag": {
         "id": 21,
         "name": "BUG"
@@ -3250,7 +3301,7 @@
     {
       "key": "TESTML-54146",
       "title": "Aggiornamento descrizione TTF MA_38.1 e Gestione PUN ",
-      "rawAssignee": "Paolo Petraglia",
+      "rawAssignee": "antonino giordano",
       "assignee": {
         "method": "unresolved",
         "tridentUserId": null
@@ -3260,79 +3311,6 @@
         "method": "string-match",
         "clusterId": 195,
         "clusterName": "BBP - CROSS_CPQ.2"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-54145",
-      "title": "KO Caricamento indice mensile PI",
-      "rawAssignee": "Paolo Petraglia",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 195,
-        "clusterName": "BBP - CROSS_CPQ.2"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-54144",
-      "title": "KO Caricamento indice mensile PSV ICIS STD_38.52",
-      "rawAssignee": "Paolo Petraglia",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 195,
-        "clusterName": "BBP - CROSS_CPQ.2"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-54130",
-      "title": "I-33.27 - verifica su attuale flusso di integrazione",
-      "rawAssignee": "maria angela nugnes",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "llm",
-        "clusterId": 5,
-        "clusterName": "STG | Integrazioni Esterne",
-        "confidence": 0.9
       },
       "ownership": null,
       "tag": {
@@ -3394,7 +3372,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-54125",
@@ -3474,31 +3452,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-54043",
-      "title": "Rimozione logica di invio mail automatica successiva alla fase A001 - INVIO DOCUMENTAZIONE",
-      "rawAssignee": "Leonardo Notaristefano",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 414,
-        "clusterName": "BBP - CROSS_29.2"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 251,
-        "name": "Enhancement"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-54035",
@@ -3513,30 +3467,6 @@
         "method": "string-match",
         "clusterId": 510,
         "clusterName": "BBP - CRE_02"
-      },
-      "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-54033",
-      "title": "[SSP19] InOrder Agenti - APPAROUND - anche se presente REMI, non viene valorizzato tipoDistribuzione",
-      "rawAssignee": "ALICE TINAGLI",
-      "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
-      },
-      "skip": true,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 741,
-        "clusterName": "BBP - SSP_19"
       },
       "ownership": null,
       "tag": {
@@ -3790,7 +3720,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-53624",
@@ -3818,7 +3748,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-53621",
@@ -3846,79 +3776,27 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-53619",
-      "title": "CROSS_72.1 - Durante la fase di navigazione su test-01 sono visualizzati erroneamente dei popup",
-      "rawAssignee": "Giovanni Corrado",
-      "assignee": {
-        "method": "exact",
-        "tridentUserId": 48,
-        "matchedName": "Giovanni Corrado"
-      },
-      "skip": false,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 644,
-        "clusterName": "BBP - CROSS_72.1"
-      },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 48
-      },
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-53618",
-      "title": "[CROSS_72.1] Test 33 - Aggiornamento campo Disalimentabilità non viene visualizzata correttamente la valorizzazione del campo CRM sul file RCU",
-      "rawAssignee": "Giovanni Corrado",
-      "assignee": {
-        "method": "exact",
-        "tridentUserId": 48,
-        "matchedName": "Giovanni Corrado"
-      },
-      "skip": false,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 644,
-        "clusterName": "BBP - CROSS_72.1"
-      },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 48
-      },
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-53617",
       "title": "[CROSS_72.1]  - Aggiornamento TIPO MERCATO - Una volta cliccato sul bottone ANNULLA la riga RCU non è aggiornata correttamente",
-      "rawAssignee": "antoniopaglialonga",
+      "rawAssignee": "Cristina Passarello",
       "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
+        "method": "exact",
+        "tridentUserId": 354,
+        "matchedName": "Cristina Passarello"
       },
-      "skip": true,
+      "skip": false,
       "cluster": {
         "method": "string-match",
         "clusterId": 644,
         "clusterName": "BBP - CROSS_72.1"
       },
-      "ownership": null,
+      "ownership": {
+        "source": "assignee",
+        "tridentUserId": 354
+      },
       "tag": {
         "id": 21,
         "name": "BUG"
@@ -3954,7 +3832,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-52896",
@@ -4038,7 +3916,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-52500",
@@ -4066,7 +3944,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-52499",
@@ -4094,7 +3972,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-52498",
@@ -4122,7 +4000,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-52497",
@@ -4150,7 +4028,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-52495",
@@ -4178,7 +4056,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-52390",
@@ -4206,7 +4084,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-52379",
@@ -4602,10 +4480,8 @@
       },
       "skip": true,
       "cluster": {
-        "method": "llm",
-        "clusterId": 3,
-        "clusterName": "STG | Prima Attivazione",
-        "confidence": 0.85
+        "method": "none",
+        "clusterId": false
       },
       "ownership": null,
       "tag": {
@@ -4614,13 +4490,8 @@
       },
       "sprint": {
         "applicable": true,
-        "matchedSprintId": null,
-        "wouldCreate": true,
-        "derived": {
-          "derivedName": "15 a 19 | Giugno 2026",
-          "dateFrom": "2026-06-15",
-          "dateTo": "2026-06-19"
-        }
+        "matchedSprintId": 101,
+        "matchedSprintName": "15 a 19 | Giugno 2026"
       },
       "alreadyExists": false
     },
@@ -4650,7 +4521,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-51771",
@@ -4737,7 +4608,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-51766",
@@ -4765,7 +4636,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-51763",
@@ -4817,7 +4688,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-51758",
@@ -4845,7 +4716,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-51755",
@@ -4873,7 +4744,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-51749",
@@ -4931,7 +4802,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-50713",
@@ -4959,7 +4830,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-50582",
@@ -5059,7 +4930,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-50537",
@@ -5076,34 +4947,6 @@
         "clusterName": "BBP - SSP_13"
       },
       "ownership": null,
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": false
-    },
-    {
-      "key": "TESTML-50527",
-      "title": "Assenza Hyperlynk Case Incompatibili",
-      "rawAssignee": "Giovanni Corrado",
-      "assignee": {
-        "method": "exact",
-        "tridentUserId": 48,
-        "matchedName": "Giovanni Corrado"
-      },
-      "skip": false,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 452,
-        "clusterName": "BBP - CROSS_31.2"
-      },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 48
-      },
       "tag": {
         "id": 21,
         "name": "BUG"
@@ -5139,7 +4982,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-50253",
@@ -5191,7 +5034,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-50249",
@@ -5857,23 +5700,27 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-50085",
       "title": "Data Fine Fornitura Cliente da riformulare e mostrare",
-      "rawAssignee": "marco.brugnano",
+      "rawAssignee": "Cristina Passarello",
       "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
+        "method": "exact",
+        "tridentUserId": 354,
+        "matchedName": "Cristina Passarello"
       },
-      "skip": true,
+      "skip": false,
       "cluster": {
         "method": "string-match",
         "clusterId": 311,
         "clusterName": "BBP - CROSS_17.2"
       },
-      "ownership": null,
+      "ownership": {
+        "source": "assignee",
+        "tridentUserId": 354
+      },
       "tag": {
         "id": 21,
         "name": "BUG"
@@ -5982,22 +5829,18 @@
     {
       "key": "TESTML-50070",
       "title": "Adeguamento Nomi Semafori",
-      "rawAssignee": "Selene Verna",
+      "rawAssignee": "beatrice.zinchi",
       "assignee": {
-        "method": "exact",
-        "tridentUserId": 65,
-        "matchedName": "Selene Verna"
+        "method": "unresolved",
+        "tridentUserId": null
       },
-      "skip": false,
+      "skip": true,
       "cluster": {
         "method": "string-match",
         "clusterId": 515,
         "clusterName": "CRM_15.2"
       },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 65
-      },
+      "ownership": null,
       "tag": {
         "id": 251,
         "name": "Enhancement"
@@ -6032,15 +5875,10 @@
       },
       "sprint": {
         "applicable": true,
-        "matchedSprintId": null,
-        "wouldCreate": true,
-        "derived": {
-          "derivedName": "15 a 19 | Giugno 2026",
-          "dateFrom": "2026-06-15",
-          "dateTo": "2026-06-19"
-        }
+        "matchedSprintId": 101,
+        "matchedSprintName": "15 a 19 | Giugno 2026"
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-49904",
@@ -6144,7 +5982,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-49874",
@@ -6172,7 +6010,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-48841",
@@ -6223,34 +6061,6 @@
       "alreadyExists": false
     },
     {
-      "key": "TESTML-47465",
-      "title": "La motivazione KO presente nel template email deve avere tutti i caratteri minuscoli",
-      "rawAssignee": "Aron Winkler",
-      "assignee": {
-        "method": "exact",
-        "tridentUserId": 279,
-        "matchedName": "Aron Winkler"
-      },
-      "skip": false,
-      "cluster": {
-        "method": "string-match",
-        "clusterId": 416,
-        "clusterName": "BBP - CROSS_60.2"
-      },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 279
-      },
-      "tag": {
-        "id": 21,
-        "name": "BUG"
-      },
-      "sprint": {
-        "applicable": false
-      },
-      "alreadyExists": true
-    },
-    {
       "key": "TESTML-46592",
       "title": "AGGIUSTAMENTI VISTA ENTITA DI FATTURAZIONE",
       "rawAssignee": "Giovanni Corrado",
@@ -6276,7 +6086,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-46586",
@@ -6328,7 +6138,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-46580",
@@ -6456,13 +6266,13 @@
         "tridentUserId": 48
       },
       "tag": {
-        "id": 21,
-        "name": "BUG"
+        "id": 251,
+        "name": "Enhancement"
       },
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-44610",
@@ -6550,7 +6360,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-44503",
@@ -6601,13 +6411,8 @@
       },
       "sprint": {
         "applicable": true,
-        "matchedSprintId": null,
-        "wouldCreate": true,
-        "derived": {
-          "derivedName": "15 a 19 | Giugno 2026",
-          "dateFrom": "2026-06-15",
-          "dateTo": "2026-06-19"
-        }
+        "matchedSprintId": 101,
+        "matchedSprintName": "15 a 19 | Giugno 2026"
       },
       "alreadyExists": true
     },
@@ -6968,22 +6773,18 @@
     {
       "key": "TESTML-41059",
       "title": "[CROSS_72.1] Test 43 -Controlli di aggiornamento: Nel case alcuni campi devono essere aggiornati/modificati ",
-      "rawAssignee": "Selene Verna",
+      "rawAssignee": "beatrice.zinchi",
       "assignee": {
-        "method": "exact",
-        "tridentUserId": 65,
-        "matchedName": "Selene Verna"
+        "method": "unresolved",
+        "tridentUserId": null
       },
-      "skip": false,
+      "skip": true,
       "cluster": {
         "method": "string-match",
         "clusterId": 644,
         "clusterName": "BBP - CROSS_72.1"
       },
-      "ownership": {
-        "source": "assignee",
-        "tridentUserId": 65
-      },
+      "ownership": null,
       "tag": {
         "id": 21,
         "name": "BUG"
@@ -7019,7 +6820,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-41055",
@@ -7047,7 +6848,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-41052",
@@ -7286,7 +7087,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-35585",
@@ -7347,31 +7148,30 @@
       },
       "sprint": {
         "applicable": true,
-        "matchedSprintId": null,
-        "wouldCreate": true,
-        "derived": {
-          "derivedName": "29 Giugno a 3 Luglio | 2026",
-          "dateFrom": "2026-06-29",
-          "dateTo": "2026-07-03"
-        }
+        "matchedSprintId": 102,
+        "matchedSprintName": "29 Giugno a 3 Luglio | 2026"
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-35455",
       "title": "Errori Wizard Creazione Cliente Persona Fisica",
-      "rawAssignee": "Lucio Esposito",
+      "rawAssignee": "Giovanni Corrado",
       "assignee": {
-        "method": "unresolved",
-        "tridentUserId": null
+        "method": "exact",
+        "tridentUserId": 48,
+        "matchedName": "Giovanni Corrado"
       },
-      "skip": true,
+      "skip": false,
       "cluster": {
         "method": "string-match",
         "clusterId": 515,
         "clusterName": "CRM_15.2"
       },
-      "ownership": null,
+      "ownership": {
+        "source": "assignee",
+        "tridentUserId": 48
+      },
       "tag": {
         "id": 21,
         "name": "BUG"
@@ -7379,7 +7179,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-35153",
@@ -7437,7 +7237,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-34601",
@@ -7536,7 +7336,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-23286",
@@ -7783,7 +7583,7 @@
       "sprint": {
         "applicable": false
       },
-      "alreadyExists": false
+      "alreadyExists": true
     },
     {
       "key": "TESTML-21415",
@@ -7936,10 +7736,8 @@
       },
       "skip": true,
       "cluster": {
-        "method": "llm",
-        "clusterId": 47,
-        "clusterName": "STG | cruscotto warning errori",
-        "confidence": 0.8
+        "method": "none",
+        "clusterId": false
       },
       "ownership": null,
       "tag": {
@@ -7961,10 +7759,8 @@
       },
       "skip": true,
       "cluster": {
-        "method": "llm",
-        "clusterId": 5,
-        "clusterName": "STG | Integrazioni Esterne",
-        "confidence": 0.85
+        "method": "none",
+        "clusterId": false
       },
       "ownership": null,
       "tag": {

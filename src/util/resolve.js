@@ -1,6 +1,6 @@
 import { matchCluster } from "./trident.js";
 import { normalizeName, fuzzyMatchName, normalizeSprintText } from "./matching.js";
-import { resolveAssigneeLLM, resolveClusterLLM, meetsConfidence, meetsAssigneeConfidence } from "./openai.js";
+import { resolveAssigneeLLM, resolveClusterLLM, meetsConfidence, meetsAssigneeConfidence } from "./claude.js";
 
 export const TAG_MAP = {
   Bug: { id: 21, name: "BUG" },

@@ -4,9 +4,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { Command } from "commander";
-import { runCommand } from "./commands/run.js";
+import { runCommand, runCreates, runUpdates, normalizeIssue } from "./commands/run.js";
 import { generateCommand } from "./commands/generate.js";
 import { reportCommand } from "./commands/report.js";
+import { fetchAllJiraIssues } from "./util/jira.js";
+import { fetchExistingTasks } from "./util/trident.js";
 
 const program = new Command();
 program.name("jirasync").description("Sync Jira issues to Trident").version("1.0.0");
@@ -30,20 +32,37 @@ program
 
 program
   .command("start")
-  .description("Run sync loop every 10 minutes")
+  .description("Run task creation every 10 minutes; reopen-check + comment-sync every UPDATE_INTERVAL_MINUTES (default 30)")
   .option("-o, --output <path>", "output JSON file path", "output.json")
   .action(async (options) => {
-    const INTERVAL = 10 * 60 * 1000;
-    const run = async () => {
-      console.log(`[${new Date().toISOString()}] Running sync...`);
+    const CREATE_INTERVAL = 10 * 60 * 1000;
+    const UPDATE_INTERVAL = parseInt(process.env.UPDATE_INTERVAL_MINUTES ?? "30") * 60 * 1000;
+
+    const runCreatesTick = async () => {
+      console.log(`[${new Date().toISOString()}] Running creates sync...`);
       try {
-        await runCommand(options);
+        await runCreates(options);
       } catch (err) {
-        console.error(`Sync error: ${err.message}`);
+        console.error(`Creates sync error: ${err.message}`);
       }
     };
-    await run();
-    setInterval(run, INTERVAL);
+
+    const runUpdatesTick = async () => {
+      console.log(`[${new Date().toISOString()}] Running updates sync...`);
+      try {
+        const [rawIssues, existingTasks] = await Promise.all([fetchAllJiraIssues(), fetchExistingTasks()]);
+        const issues = rawIssues.map(normalizeIssue);
+        await runUpdates({ issues, existingTasks });
+      } catch (err) {
+        console.error(`Updates sync error: ${err.message}`);
+      }
+    };
+
+    await runCreatesTick();
+    setInterval(runCreatesTick, CREATE_INTERVAL);
+
+    await runUpdatesTick();
+    setInterval(runUpdatesTick, UPDATE_INTERVAL);
   });
 
 program.parse();

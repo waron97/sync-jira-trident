@@ -1,7 +1,7 @@
-import fetch from "node-fetch";
+import { fetchWithRetry } from "./httpRetry.js";
 
 async function callTrident(model, method, args, kwargs = {}) {
-  const res = await fetch(`${process.env.TRIDENT_URL}/jsonrpc`, {
+  const res = await fetchWithRetry(`${process.env.TRIDENT_URL}/jsonrpc`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -22,7 +22,7 @@ async function callTrident(model, method, args, kwargs = {}) {
         ],
       },
     }),
-  });
+  }, { label: `Trident (${model}.${method})` });
 
   if (!res.ok)
     throw new Error(`Trident HTTP error: ${res.status} ${await res.text()}`);
@@ -120,6 +120,13 @@ export async function writeTridentTask(id, fields) {
   return callTrident("project.task", "write", [[id], fields]);
 }
 
+// Batched variant: one `write` call for many task ids sharing the same
+// field values (e.g. reopening a whole cycle's worth of tasks at once).
+export async function writeTridentTasks(ids, fields) {
+  if (!ids.length) return true;
+  return callTrident("project.task", "write", [ids, fields]);
+}
+
 export async function createTridentAttachment({ name, datas, mimetype, resId }) {
   const result = await callTrident("ir.attachment", "create", [[{
     name,
@@ -129,6 +136,15 @@ export async function createTridentAttachment({ name, datas, mimetype, resId }) 
     res_id: resId,
   }]]);
   return Array.isArray(result) ? result[0] : result;
+}
+
+// Batched variant of createTridentAttachment: one `create` call for many
+// ir.attachment records (e.g. all attachments a task's new comments need),
+// returns the new ids in the same order as `records`.
+export async function createTridentAttachments(records) {
+  if (!records.length) return [];
+  const result = await callTrident("ir.attachment", "create", [records]);
+  return Array.isArray(result) ? result : [result];
 }
 
 export async function fetchTaskAttachments(taskId) {
@@ -154,14 +170,19 @@ export async function fetchAllTaskMessages(taskIds) {
 // through this JSON-RPC path double-escapes HTML (verified live, see
 // plan.md §10.2). subtype_id 2 = "Note", doesn't notify followers — avoids
 // a notification storm on the first backlog import.
-export async function createComment({ taskId, body, attachmentIds = [] }) {
-  const result = await callTrident("mail.message", "create", [[{
+//
+// Batched: one `create` call posts every comment in `records`
+// ({taskId, body, attachmentIds}[]), returns the new ids in the same order.
+export async function createComments(records) {
+  if (!records.length) return [];
+  const vals = records.map(({ taskId, body, attachmentIds = [] }) => ({
     model: "project.task",
     res_id: taskId,
     body,
     message_type: "comment",
     subtype_id: 2,
     attachment_ids: [[6, 0, attachmentIds]],
-  }]]);
-  return Array.isArray(result) ? result[0] : result;
+  }));
+  const result = await callTrident("mail.message", "create", [vals]);
+  return Array.isArray(result) ? result : [result];
 }

@@ -14,10 +14,12 @@ import {
   createSprint,
   createTridentTask,
   writeTridentTask,
+  writeTridentTasks,
   createTridentAttachment,
+  createTridentAttachments,
   fetchTaskAttachments,
   fetchAllTaskMessages,
-  createComment,
+  createComments,
 } from "../util/trident.js";
 import { resolveAssignee, resolveCluster, resolveOwnership, resolveTag, matchSprint } from "../util/resolve.js";
 import { collectCommentMedia, matchAttachmentForMedia, extractSyncedCommentIds } from "../util/comments.js";
@@ -159,22 +161,105 @@ async function syncReopens(existingTasks, currentNames) {
     return (stageId === resolvedStageId || stageId === rejectedStageId) && currentNames.has(t.name);
   });
 
-  for (const task of toReopen) {
-    await writeTridentTask(task.id, { stage_id: startingStageId });
-    console.log(`Reopened Trident task ${task.id}: ${task.name}`);
+  if (toReopen.length) {
+    await writeTridentTasks(toReopen.map((t) => t.id), { stage_id: startingStageId });
+    for (const task of toReopen) console.log(`Reopened Trident task ${task.id}: ${task.name}`);
   }
 
   return toReopen.length;
 }
 
-// One Jira HTTP call per existing task per run (no bulk multi-issue comment
-// endpoint exists) — fine at current scale, revisit only if it becomes a
-// real latency problem. Scope = every existing Trident task with a
-// parseable key, not just newly-created ones; old tickets keep
-// accumulating Jira discussion too.
-async function syncComments(existingTasks) {
+const COMMENT_CREATE_CHUNK_SIZE = 50;
+
+function chunk(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
+// Resolves every media node across a task's new comments against Jira's
+// attachment list, batch-uploading whatever isn't already a Trident
+// attachment in ONE ir.attachment.create call (was: one call per
+// attachment). Returns Map<mediaNodeId, {tridentAttachmentId, filename, mimeType}>.
+async function resolveTaskCommentAttachments(task, key, mediaNodesByComment, jiraAttachments) {
+  const existingAttByName = new Map((await fetchTaskAttachments(task.id)).map((a) => [a.name, a.id]));
+  const matchedByMediaId = new Map();
+  const toCreate = [];
+
+  for (const { comment, mediaNodes } of mediaNodesByComment) {
+    for (const mediaNode of mediaNodes) {
+      const matched = matchAttachmentForMedia(mediaNode, jiraAttachments, comment.created);
+      if (!matched) continue;
+      matchedByMediaId.set(mediaNode.id, matched);
+
+      if (existingAttByName.has(matched.filename)) continue;
+      if (toCreate.some((r) => r.name === matched.filename)) continue;
+
+      try {
+        const datas = await fetchAttachmentBase64(matched.content);
+        toCreate.push({ name: matched.filename, datas, mimetype: matched.mimeType, res_model: "project.task", res_id: task.id });
+      } catch (e) {
+        console.warn(`Failed to fetch comment attachment ${matched.filename} for ${key}: ${e.message}`);
+      }
+    }
+  }
+
+  if (toCreate.length) {
+    const newIds = await createTridentAttachments(toCreate);
+    newIds.forEach((id, i) => existingAttByName.set(toCreate[i].name, id));
+  }
+
+  const resolvedMap = new Map();
+  for (const [mediaId, matched] of matchedByMediaId) {
+    const tridentAttachmentId = existingAttByName.get(matched.filename);
+    if (tridentAttachmentId) resolvedMap.set(mediaId, { tridentAttachmentId, filename: matched.filename, mimeType: matched.mimeType });
+  }
+  return resolvedMap;
+}
+
+// Builds the (not-yet-posted) comment records for one task: fetches Jira
+// comments, filters to unsynced ones, resolves/uploads any attachments
+// they reference, and renders each comment's HTML body + idempotency
+// footer. Posting itself happens in a later, batched phase (syncComments).
+async function resolveTaskComments(task, key, synced) {
+  let comments;
+  try {
+    comments = await fetchJiraComments(key);
+  } catch (e) {
+    console.warn(`Failed to fetch Jira comments for ${key}: ${e.message}`);
+    return [];
+  }
+
+  const newComments = comments.filter((c) => !synced.has(String(c.id)));
+  if (!newComments.length) return [];
+
+  const mediaNodesByComment = newComments.map((comment) => ({ comment, mediaNodes: collectCommentMedia(comment.body) }));
+  const needsMedia = mediaNodesByComment.some((m) => m.mediaNodes.length);
+
+  let resolvedMap = new Map();
+  if (needsMedia) {
+    const jiraAttachments = await fetchJiraAttachmentsForIssue(key);
+    resolvedMap = await resolveTaskCommentAttachments(task, key, mediaNodesByComment, jiraAttachments);
+  }
+
+  return newComments.map((comment) => {
+    const html = adfToHtml(comment.body, { resolveMedia: (mediaId) => resolvedMap.get(mediaId) });
+    const footer = `<p><small style="color:#999999">↪ Jira comment #${comment.id} · ${comment.author?.displayName ?? "?"} · ${comment.created}</small></p>`;
+    const attachmentIds = collectCommentMedia(comment.body)
+      .map((m) => resolvedMap.get(m.id)?.tridentAttachmentId)
+      .filter(Boolean);
+
+    return { taskId: task.id, body: html + footer, attachmentIds, logKey: key, commentId: comment.id };
+  });
+}
+
+// One Jira HTTP call per task (no bulk multi-issue comment endpoint exists).
+// Rate limiting is handled by fetchWithRetry's 429 backoff, not by batching.
+// Posting to Trident is batched: every resolved comment across all checked
+// tasks goes out via as few mail.message.create calls as possible.
+async function syncComments(tasks) {
   const keyed = [];
-  for (const task of existingTasks) {
+  for (const task of tasks) {
     const match = task.name.match(TASK_KEY_RE);
     if (match) keyed.push({ task, key: match[1] });
   }
@@ -188,74 +273,29 @@ async function syncComments(existingTasks) {
     syncedByTask.set(msg.res_id, set);
   }
 
-  let posted = 0;
-
+  const pending = [];
   for (const { task, key } of keyed) {
     const synced = syncedByTask.get(task.id) ?? new Set();
+    pending.push(...(await resolveTaskComments(task, key, synced)));
+  }
+  if (!pending.length) return 0;
 
-    let comments;
-    try {
-      comments = await fetchJiraComments(key);
-    } catch (e) {
-      console.warn(`Failed to fetch Jira comments for ${key}: ${e.message}`);
-      continue;
-    }
-
-    const newComments = comments.filter((c) => !synced.has(String(c.id)));
-    if (!newComments.length) continue;
-
-    // Lazy-loaded per task, only if a comment actually references media —
-    // most comments are plain text and never need these.
-    let jiraAttachments = null;
-    let existingAttByName = null;
-
-    for (const comment of newComments) {
-      const mediaNodes = collectCommentMedia(comment.body);
-      const resolvedMap = new Map();
-      const attachmentIds = [];
-
-      if (mediaNodes.length) {
-        if (jiraAttachments === null) {
-          jiraAttachments = await fetchJiraAttachmentsForIssue(key);
-        }
-        if (existingAttByName === null) {
-          existingAttByName = new Map((await fetchTaskAttachments(task.id)).map((a) => [a.name, a.id]));
-        }
-
-        for (const mediaNode of mediaNodes) {
-          const matched = matchAttachmentForMedia(mediaNode, jiraAttachments, comment.created);
-          if (!matched) continue;
-
-          let tridentAttId = existingAttByName.get(matched.filename);
-          if (!tridentAttId) {
-            try {
-              const datas = await fetchAttachmentBase64(matched.content);
-              tridentAttId = await createTridentAttachment({ name: matched.filename, datas, mimetype: matched.mimeType, resId: task.id });
-              existingAttByName.set(matched.filename, tridentAttId);
-            } catch (e) {
-              console.warn(`Failed to upload comment attachment ${matched.filename} for ${key}: ${e.message}`);
-              continue;
-            }
-          }
-
-          resolvedMap.set(mediaNode.id, { tridentAttachmentId: tridentAttId, filename: matched.filename, mimeType: matched.mimeType });
-          attachmentIds.push(tridentAttId);
-        }
-      }
-
-      const html = adfToHtml(comment.body, { resolveMedia: (mediaId) => resolvedMap.get(mediaId) });
-      const footer = `<p><small style="color:#999999">↪ Jira comment #${comment.id} · ${comment.author?.displayName ?? "?"} · ${comment.created}</small></p>`;
-
-      const messageId = await createComment({ taskId: task.id, body: html + footer, attachmentIds });
-      console.log(`Posted comment ${messageId} on task ${task.id} (${key}, Jira comment #${comment.id})`);
-      posted++;
-    }
+  let posted = 0;
+  for (const batch of chunk(pending, COMMENT_CREATE_CHUNK_SIZE)) {
+    const ids = await createComments(batch);
+    batch.forEach((rec, i) => {
+      console.log(`Posted comment ${ids[i]} on task ${rec.taskId} (${rec.logKey}, Jira comment #${rec.commentId})`);
+    });
+    posted += batch.length;
   }
 
   return posted;
 }
 
-export async function runCommand(options) {
+// Fetch + create-only pass: Jira issues, Trident lookups, and syncCreates.
+// Reused by both the scheduled `start` create tick (every 10 min) and the
+// one-shot `run` CLI command. Never touched by the update path below.
+export async function runCreates(options) {
   const [rawIssues, clusters, allowlist, sprints, existingTasks] = await Promise.all([
     fetchAllJiraIssues(),
     fetchClusters(),
@@ -274,10 +314,22 @@ export async function runCommand(options) {
   const { created, skipped, alreadyExists } = await syncCreates(issues, { clusters, allowlist, sprints, existingNames });
   console.log(`${created} tasks created, ${skipped} skipped (no matching project member), ${alreadyExists} already existed`);
 
+  return { issues, existingTasks };
+}
+
+// Reopen-check + comment-sync pass, both run over the full existingTasks
+// list every time — no batching/cycling; Jira 429s are handled by
+// fetchWithRetry's backoff instead.
+export async function runUpdates({ issues, existingTasks }) {
   const currentNames = new Set(issues.map((i) => `[${i.key}] ${i.title}`));
   const reopened = await syncReopens(existingTasks, currentNames);
   console.log(`${reopened} tasks reopened`);
 
   const commentsPosted = await syncComments(existingTasks);
-  console.log(`${commentsPosted} Jira comments synced to Trident`);
+  console.log(`${commentsPosted} Jira comments synced to Trident (${existingTasks.length} tasks checked)`);
+}
+
+export async function runCommand(options) {
+  const { issues, existingTasks } = await runCreates(options);
+  await runUpdates({ issues, existingTasks });
 }

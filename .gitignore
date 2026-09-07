@@ -4,3 +4,4 @@ dotenv
 .env
 trident.json
 output.json
+.sync-cursor.json

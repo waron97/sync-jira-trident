@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import { fetchWithRetry } from "./httpRetry.js";
 
 function applyMarks(text, marks = []) {
   return marks.reduce((t, mark) => {
@@ -84,12 +84,12 @@ export async function fetchJiraIssue(key) {
     `${process.env.JIRA_USER}:${process.env.JIRA_TOKEN}`
   ).toString("base64");
 
-  const res = await fetch(`${BASE_URL}/issue/${key}?fields=${FIELDS.join(",")}`, {
+  const res = await fetchWithRetry(`${BASE_URL}/issue/${key}?fields=${FIELDS.join(",")}`, {
     headers: {
       Authorization: `Basic ${AUTH}`,
       Accept: "application/json",
     },
-  });
+  }, { label: "Jira" });
 
   if (!res.ok)
     throw new Error(`Jira API error: ${res.status} ${await res.text()}`);
@@ -111,7 +111,7 @@ async function searchJiraIssues(jql, fields) {
     const body = { jql, fields, maxResults };
     if (nextPageToken) body.nextPageToken = nextPageToken;
 
-    const res = await fetch(`${BASE_URL}/search/jql`, {
+    const res = await fetchWithRetry(`${BASE_URL}/search/jql`, {
       method: "POST",
       headers: {
         Authorization: `Basic ${AUTH}`,
@@ -119,7 +119,7 @@ async function searchJiraIssues(jql, fields) {
         Accept: "application/json",
       },
       body: JSON.stringify(body),
-    });
+    }, { label: "Jira" });
 
     if (!res.ok)
       throw new Error(`Jira API error: ${res.status} ${await res.text()}`);
@@ -148,9 +148,9 @@ export async function fetchJiraComments(key) {
   const maxResults = 100;
 
   while (true) {
-    const res = await fetch(`${BASE_URL}/issue/${key}/comment?startAt=${startAt}&maxResults=${maxResults}`, {
+    const res = await fetchWithRetry(`${BASE_URL}/issue/${key}/comment?startAt=${startAt}&maxResults=${maxResults}`, {
       headers: { Authorization: `Basic ${AUTH}`, Accept: "application/json" },
-    });
+    }, { label: "Jira" });
 
     if (!res.ok)
       throw new Error(`Jira API error: ${res.status} ${await res.text()}`);
@@ -172,9 +172,9 @@ export async function fetchJiraAttachmentsForIssue(key) {
     `${process.env.JIRA_USER}:${process.env.JIRA_TOKEN}`
   ).toString("base64");
 
-  const res = await fetch(`${BASE_URL}/issue/${key}?fields=attachment`, {
+  const res = await fetchWithRetry(`${BASE_URL}/issue/${key}?fields=attachment`, {
     headers: { Authorization: `Basic ${AUTH}`, Accept: "application/json" },
-  });
+  }, { label: "Jira" });
 
   if (!res.ok)
     throw new Error(`Jira API error: ${res.status} ${await res.text()}`);
@@ -195,9 +195,9 @@ export async function fetchAttachmentBase64(contentUrl) {
     `${process.env.JIRA_USER}:${process.env.JIRA_TOKEN}`
   ).toString("base64");
 
-  const res = await fetch(contentUrl, {
+  const res = await fetchWithRetry(contentUrl, {
     headers: { Authorization: `Basic ${AUTH}` },
-  });
+  }, { label: "Jira attachment" });
 
   if (!res.ok)
     throw new Error(`Jira attachment error: ${res.status} ${await res.text()}`);
