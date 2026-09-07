@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import { fetchAllJiraIssues } from "../util/jira.js";
-import { normalizeIssue } from "./run.js";
+import { normalizeIssue, extractTaskKey } from "./run.js";
 import { fetchClusters, fetchExistingTasks, fetchProjectFollowers, fetchSprints } from "../util/trident.js";
 import { resolveAssignee, resolveCluster, resolveOwnership, resolveTag, matchSprint } from "../util/resolve.js";
 
@@ -13,7 +13,7 @@ export async function reportCommand(options) {
     fetchExistingTasks(),
   ]);
 
-  const existingNames = new Set(existingTasks.map((t) => t.name));
+  const existingKeys = new Set(existingTasks.map((t) => extractTaskKey(t.name)).filter(Boolean));
   const issues = rawIssues.map(normalizeIssue);
   const entries = [];
 
@@ -29,7 +29,7 @@ export async function reportCommand(options) {
     const ownership = skip ? null : resolveOwnership(cluster, clusters, assignee);
     const tag = resolveTag(issue.tipologiaSegnalazione);
     const sprint = matchSprint(issue.priorityWeek, sprints);
-    const alreadyExists = existingNames.has(`[${issue.key}] ${issue.title}`);
+    const alreadyExists = existingKeys.has(issue.key);
 
     entries.push({
       key: issue.key,

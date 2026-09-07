@@ -27,6 +27,20 @@ import { collectCommentMedia, matchAttachmentForMedia, extractSyncedCommentIds }
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 const TASK_KEY_RE = /^\[([A-Z]+-\d+)\]/;
 
+export function extractTaskKey(name) {
+  return name.match(TASK_KEY_RE)?.[1] ?? null;
+}
+
+// [<jira key>][<processo di riferimento>] <jira title> — the processo
+// bracket is omitted when the issue has no "Processo di riferimento" value.
+// Dedup/reopen matching keys off extractTaskKey(), not this string, so
+// title text changes (Jira-side or in this composition) never cause a
+// re-created duplicate task.
+export function buildTaskName(issue) {
+  const processo = issue.processoDiRiferimento ? `[${issue.processoDiRiferimento}]` : "";
+  return `[${issue.key}]${processo} ${issue.title}`;
+}
+
 function resolveSeverity(issue) {
   if (issue.bloccante === "Si") return parseInt(process.env.TRIDENT_SEVERITY_BLOCCANTE);
   switch (issue.priority) {
@@ -81,7 +95,7 @@ export function buildTridentPayload(issue, { assignee, cluster, ownership, tag, 
   const JIRA_BROWSE = process.env.JIRA_URL.replace("/rest/api/3", "");
 
   const payload = {
-    name: `[${issue.key}] ${issue.title}`,
+    name: buildTaskName(issue),
     project_id: parseInt(process.env.TRIDENT_PROJECT_ID),
     stage_id: parseInt(process.env.TRIDENT_STARTING_STAGE_ID),
     x_livello_task: "task",
@@ -118,19 +132,17 @@ export async function resolveOrCreateSprint(priorityWeek, sprints) {
   return newId;
 }
 
-async function syncCreates(issues, { clusters, allowlist, sprints, existingNames }) {
+async function syncCreates(issues, { clusters, allowlist, sprints, existingKeys }) {
   let created = 0, skipped = 0, alreadyExists = 0;
 
   for (const issue of issues) {
-    const name = `[${issue.key}] ${issue.title}`;
-
     const assignee = await resolveAssignee(issue.assignee, allowlist);
     if (assignee.method === "unresolved") {
       skipped++;
       continue;
     }
 
-    if (existingNames.has(name)) {
+    if (existingKeys.has(issue.key)) {
       alreadyExists++;
       continue;
     }
@@ -151,14 +163,15 @@ async function syncCreates(issues, { clusters, allowlist, sprints, existingNames
   return { created, skipped, alreadyExists };
 }
 
-async function syncReopens(existingTasks, currentNames) {
+async function syncReopens(existingTasks, currentKeys) {
   const resolvedStageId = parseInt(process.env.TRIDENT_RESOLVED_JIRA_STAGE_ID);
   const rejectedStageId = parseInt(process.env.TRIDENT_REJECTED_STAGE_ID);
   const startingStageId = parseInt(process.env.TRIDENT_STARTING_STAGE_ID);
 
   const toReopen = existingTasks.filter((t) => {
     const stageId = Array.isArray(t.stage_id) ? t.stage_id[0] : t.stage_id;
-    return (stageId === resolvedStageId || stageId === rejectedStageId) && currentNames.has(t.name);
+    const key = extractTaskKey(t.name);
+    return (stageId === resolvedStageId || stageId === rejectedStageId) && key && currentKeys.has(key);
   });
 
   if (toReopen.length) {
@@ -260,8 +273,8 @@ async function resolveTaskComments(task, key, synced) {
 async function syncComments(tasks) {
   const keyed = [];
   for (const task of tasks) {
-    const match = task.name.match(TASK_KEY_RE);
-    if (match) keyed.push({ task, key: match[1] });
+    const key = extractTaskKey(task.name);
+    if (key) keyed.push({ task, key });
   }
   if (!keyed.length) return 0;
 
@@ -310,8 +323,8 @@ export async function runCreates(options) {
   await fs.writeFile(outPath, JSON.stringify(issues, null, 2), "utf-8");
   console.log(`Wrote ${issues.length} issues to ${outPath}`);
 
-  const existingNames = new Set(existingTasks.map((t) => t.name));
-  const { created, skipped, alreadyExists } = await syncCreates(issues, { clusters, allowlist, sprints, existingNames });
+  const existingKeys = new Set(existingTasks.map((t) => extractTaskKey(t.name)).filter(Boolean));
+  const { created, skipped, alreadyExists } = await syncCreates(issues, { clusters, allowlist, sprints, existingKeys });
   console.log(`${created} tasks created, ${skipped} skipped (no matching project member), ${alreadyExists} already existed`);
 
   return { issues, existingTasks };
@@ -321,8 +334,8 @@ export async function runCreates(options) {
 // list every time — no batching/cycling; Jira 429s are handled by
 // fetchWithRetry's backoff instead.
 export async function runUpdates({ issues, existingTasks }) {
-  const currentNames = new Set(issues.map((i) => `[${i.key}] ${i.title}`));
-  const reopened = await syncReopens(existingTasks, currentNames);
+  const currentKeys = new Set(issues.map((i) => i.key));
+  const reopened = await syncReopens(existingTasks, currentKeys);
   console.log(`${reopened} tasks reopened`);
 
   const commentsPosted = await syncComments(existingTasks);

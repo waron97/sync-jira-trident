@@ -1,7 +1,7 @@
 import { fetchJiraIssue } from "../util/jira.js";
 import { fetchExistingTasks, fetchClusters, fetchProjectFollowers, fetchSprints, createTridentTask, writeTridentTask } from "../util/trident.js";
 import { resolveAssignee, resolveCluster, resolveOwnership, resolveTag } from "../util/resolve.js";
-import { normalizeIssue, buildTridentPayload, resolveOrCreateSprint, uploadIssueAttachments } from "./run.js";
+import { normalizeIssue, buildTridentPayload, buildTaskName, extractTaskKey, resolveOrCreateSprint, uploadIssueAttachments } from "./run.js";
 
 export async function generateCommand(key) {
   const raw = await fetchJiraIssue(key);
@@ -13,7 +13,7 @@ export async function generateCommand(key) {
     fetchSprints(),
     fetchExistingTasks(),
   ]);
-  const existingNames = new Set(existingTasks.map((t) => t.name));
+  const existingKeys = new Set(existingTasks.map((t) => extractTaskKey(t.name)).filter(Boolean));
 
   const assignee = await resolveAssignee(issue.assignee, allowlist);
   if (assignee.method === "unresolved") {
@@ -21,9 +21,8 @@ export async function generateCommand(key) {
     return;
   }
 
-  const name = `[${issue.key}] ${issue.title}`;
-  if (existingNames.has(name)) {
-    console.log(`Task already exists: ${name}`);
+  if (existingKeys.has(issue.key)) {
+    console.log(`Task already exists: ${buildTaskName(issue)}`);
     return;
   }
 
